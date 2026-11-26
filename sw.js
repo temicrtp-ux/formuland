@@ -1,4 +1,4 @@
-const CACHE_NAME = 'formuland-v1';
+const CACHE_NAME = 'formuland-v2';
 const ASSETS = [
   './',
   './index.html',
