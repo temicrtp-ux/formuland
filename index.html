@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Формуland</title><link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#8b5cf6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Формуland">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, system-ui, sans-serif; }
+        body { background: linear-gradient(145deg, #f3e8ff 0%, #e9d5ff 100%); min-height: 100vh; padding: 1.5rem; color: #2e1065; }
+        .app { max-width: 1300px; margin: 0 auto; }
+        .header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem; }
+        .logo { font-size: 2.8rem; font-weight: 800; letter-spacing: -0.02em; background: linear-gradient(135deg, #6b21a8, #a855f7); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 15px rgba(168, 85, 247, 0.3); }
+        .logo span { font-size: 1rem; font-weight: 400; color: #7e22ce; text-shadow: none; background: none; -webkit-background-clip: unset; background-clip: unset; display: block; margin-top: -0.3rem; letter-spacing: 2px; }
+        .search-box { flex: 1; min-width: 260px; max-width: 500px; position: relative; }
+        .search-box input { width: 100%; padding: 0.9rem 1.2rem 0.9rem 3rem; border: 2px solid #c084fc; border-radius: 60px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(4px); font-size: 1rem; color: #3b0764; outline: none; transition: all 0.2s; box-shadow: 0 4px 12px rgba(107, 33, 168, 0.08); }
+        .search-box input:focus { border-color: #8b5cf6; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.25); background: white; }
+        .search-box input::placeholder { color: #a78bfa; font-weight: 400; }
+        .search-icon { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); color: #8b5cf6; font-size: 1.2rem; }
+        .class-tabs { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2rem; background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(6px); padding: 0.6rem; border-radius: 60px; box-shadow: 0 6px 18px rgba(107, 33, 168, 0.08); }
+        .class-tab { padding: 0.7rem 1.6rem; border-radius: 40px; border: none; background: transparent; font-weight: 600; font-size: 1rem; color: #4c1d95; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+        .class-tab:hover { background: rgba(168, 85, 247, 0.15); color: #6b21a8; }
+        .class-tab.active { background: #8b5cf6; color: white; box-shadow: 0 6px 14px rgba(139, 92, 246, 0.4); }
+        .topic-filters { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 2.2rem; }
+        .topic-btn { padding: 0.5rem 1.2rem; border-radius: 30px; border: 2px solid #c084fc; background: transparent; font-weight: 500; font-size: 0.9rem; color: #6b21a8; cursor: pointer; transition: all 0.15s; }
+        .topic-btn:hover { background: #e9d5ff; }
+        .topic-btn.active { background: #7e22ce; border-color: #7e22ce; color: white; box-shadow: 0 4px 10px rgba(126, 34, 206, 0.3); }
+        .formulas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 0.5rem; }
+        .formula-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(8px); border-radius: 28px; padding: 1.5rem 1.2rem 1.4rem; box-shadow: 0 12px 28px rgba(107, 33, 168, 0.12); border: 1px solid rgba(192, 132, 252, 0.4); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
+        .formula-card:hover { transform: translateY(-4px); box-shadow: 0 20px 32px rgba(107, 33, 168, 0.2); border-color: #a855f7; }
+        .formula-name { font-size: 1.3rem; font-weight: 700; color: #3b0764; margin-bottom: 0.3rem; line-height: 1.3; }
+        .formula-class { display: inline-block; background: #ede9fe; color: #6b21a8; font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.8rem; border-radius: 30px; letter-spacing: 0.3px; margin-bottom: 0.9rem; align-self: flex-start; border: 1px solid #c4b5fd; }
+        .formula-expression { font-family: 'Courier New', 'Fira Code', monospace; font-size: 1.4rem; font-weight: 600; color: #6b21a8; background: #f5f3ff; padding: 0.8rem 1rem; border-radius: 16px; margin: 0.6rem 0 1rem; text-align: center; letter-spacing: 0.5px; border: 1px dashed #c4b5fd; word-break: break-word; }
+        .formula-topics { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: auto; padding-top: 0.6rem; }
+        .topic-tag { background: #e9d5ff; color: #4c1d95; font-size: 0.7rem; font-weight: 500; padding: 0.25rem 0.8rem; border-radius: 30px; border: 1px solid #d8b4fe; }
+        .empty-message { grid-column: 1 / -1; text-align: center; padding: 3rem 1rem; color: #7e22ce; font-size: 1.2rem; background: rgba(255, 255, 255, 0.5); border-radius: 48px; backdrop-filter: blur(4px); }
+        @media (max-width: 600px) { body { padding: 1rem; } .logo { font-size: 2.2rem; } .class-tab { padding: 0.5rem 1.1rem; font-size: 0.9rem; } .formulas-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="header">
+            <div class="logo">Формуland<span>твой мир формул</span></div>
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Поиск формулы или темы...">
+            </div>
+        </div>
+        <div class="class-tabs" id="classTabs"></div>
+        <div class="topic-filters" id="topicFilters"></div>
+        <div class="formulas-grid" id="formulasGrid"></div>
+    </div>
+    <script>
+        // ---------- РАСШИРЕННАЯ БАЗА ФОРМУЛ ----------
+        const formulas = [
+            // ===== 7 КЛАСС =====
+            { name: 'Скорость (равномерное движение)', expression: 'v = s / t', className: '7 класс', topics: ['Кинематика', 'Механика'] },
+            { name: 'Путь', expression: 's = v · t', className: '7 класс', topics: ['Кинематика', 'Механика'] },
+            { name: 'Средняя скорость', expression: 'v_ср = s_весь / t_всё', className: '7 класс', topics: ['Кинематика', 'Механика'] },
+            { name: 'Плотность', expression: 'ρ = m / V', className: '7 класс', topics: ['Плотность', 'Механика'] },
+            { name: 'Масса через плотность', expression: 'm = ρ · V', className: '7 класс', topics: ['Плотность', 'Механика'] },
+            { name: 'Сила тяжести', expression: 'F_тяж = m · g', className: '7 класс', topics: ['Силы', 'Динамика'] },
+            { name: 'Вес тела (покой)', expression: 'P = m · g', className: '7 класс', topics: ['Силы', 'Динамика'] },
+            { name: 'Сила упругости (закон Гука)', expression: 'F_упр = k · Δl', className: '7 класс', topics: ['Силы', 'Динамика'] },
+            { name: 'Сила трения', expression: 'F_тр = μ · N', className: '7 класс', topics: ['Силы', 'Динамика'] },
+            { name: 'Равнодействующая (одна прямая)', expression: 'R = F₁ ± F₂', className: '7 класс', topics: ['Силы', 'Динамика'] },
+            { name: 'Давление твёрдого тела', expression: 'p = F / S', className: '7 класс', topics: ['Давление', 'Механика'] },
+            { name: 'Давление жидкости', expression: 'p = ρ · g · h', className: '7 класс', topics: ['Давление', 'Гидростатика'] },
+            { name: 'Гидравлический пресс', expression: 'F₁/S₁ = F₂/S₂', className: '7 класс', topics: ['Давление', 'Гидростатика'] },
+            { name: 'Сила Архимеда', expression: 'F_A = ρ_ж · g · V_погр', className: '7 класс', topics: ['Силы', 'Гидростатика'] },
+            { name: 'Работа', expression: 'A = F · s · cos α', className: '7 класс', topics: ['Работа', 'Энергия'] },
+            { name: 'Мощность', expression: 'N = A / t', className: '7 класс', topics: ['Работа', 'Энергия'] },
+            { name: 'Правило рычага', expression: 'F₁ · l₁ = F₂ · l₂', className: '7 класс', topics: ['Статика', 'Механика'] },
+            { name: 'Момент силы', expression: 'M = F · l', className: '7 класс', topics: ['Статика', 'Механика'] },
+            { name: 'КПД механизма', expression: 'η = (A_пол / A_затр) · 100%', className: '7 класс', topics: ['Работа', 'Энергия'] },
+            { name: 'Потенциальная энергия (высота)', expression: 'E_п = m · g · h', className: '7 класс', topics: ['Энергия', 'Механика'] },
+            { name: 'Кинетическая энергия', expression: 'E_к = m · v² / 2', className: '7 класс', topics: ['Энергия', 'Механика'] },
+
+            // ===== 8 КЛАСС =====
+            { name: 'Количество теплоты (нагревание)', expression: 'Q = c · m · Δt', className: '8 класс', topics: ['Тепловые явления', 'Теплота'] },
+            { name: 'Количество теплоты (сгорание)', expression: 'Q = q · m', className: '8 класс', topics: ['Тепловые явления', 'Теплота'] },
+            { name: 'Количество теплоты (плавление)', expression: 'Q = λ · m', className: '8 класс', topics: ['Тепловые явления', 'Теплота'] },
+            { name: 'Количество теплоты (парообразование)', expression: 'Q = L · m', className: '8 класс', topics: ['Тепловые явления', 'Теплота'] },
+            { name: 'Тепловой баланс', expression: 'Q_отд = Q_пол', className: '8 класс', topics: ['Тепловые явления', 'Теплота'] },
+            { name: 'КПД теплового двигателя', expression: 'η = (Q₁ – Q₂) / Q₁', className: '8 класс', topics: ['Тепловые явления', 'Термодинамика'] },
+            { name: 'Относительная влажность', expression: 'φ = (ρ / ρ₀) · 100%', className: '8 класс', topics: ['Тепловые явления', 'Влажность'] },
+            { name: 'Сила тока', expression: 'I = q / t', className: '8 класс', topics: ['Электричество', 'Постоянный ток'] },
+            { name: 'Напряжение', expression: 'U = A / q', className: '8 класс', topics: ['Электричество', 'Постоянный ток'] },
+            { name: 'Закон Ома', expression: 'I = U / R', className: '8 класс', topics: ['Электричество', 'Постоянный ток'] },
+            { name: 'Сопротивление проводника', expression: 'R = ρ · l / S', className: '8 класс', topics: ['Электричество', 'Постоянный ток'] },
+            { name: 'Работа тока', expression: 'A = U · I · t', className: '8 класс', topics: ['Электричество', 'Постоянный ток'] },
+            { name: 'Мощность тока', expression: 'P = U · I = I²R = U²/R', className: '8 класс', topics: ['Электричество', 'Постоянный ток'] },
+            { name: 'Закон Джоуля–Ленца', expression: 'Q = I² · R · t', className: '8 класс', topics: ['Электричество', 'Постоянный ток'] },
+            { name: 'Последовательное соединение (R)', expression: 'R = R₁ + R₂ + ...', className: '8 класс', topics: ['Электричество', 'Соединения'] },
+            { name: 'Параллельное соединение (R)', expression: '1/R = 1/R₁ + 1/R₂ + ...', className: '8 класс', topics: ['Электричество', 'Соединения'] },
+            { name: 'Оптическая сила линзы', expression: 'D = 1 / F', className: '8 класс', topics: ['Оптика', 'Линзы'] },
+            { name: 'Формула тонкой линзы', expression: '1/F = 1/d + 1/f', className: '8 класс', topics: ['Оптика', 'Линзы'] },
+
+            // ===== 9 КЛАСС =====
+            { name: 'Ускорение', expression: 'a = (v – v₀) / t', className: '9 класс', topics: ['Кинематика', 'Механика'] },
+            { name: 'Скорость (равноускоренное)', expression: 'v = v₀ + a·t', className: '9 класс', topics: ['Кинематика', 'Механика'] },
+            { name: 'Перемещение (равноускоренное)', expression: 's = v₀·t + a·t²/2', className: '9 класс', topics: ['Кинематика', 'Механика'] },
+            { name: 'Перемещение (без времени)', expression: 's = (v² – v₀²) / (2a)', className: '9 класс', topics: ['Кинематика', 'Механика'] },
+            { name: 'Свободное падение (высота)', expression: 'h = g·t² / 2', className: '9 класс', topics: ['Кинематика', 'Механика'] },
+            { name: 'Движение по окружности (ускорение)', expression: 'a_ц = v² / r = ω²·r', className: '9 класс', topics: ['Кинематика', 'Механика'] },
+            { name: 'Период обращения', expression: 'T = 2π·r / v', className: '9 класс', topics: ['Кинематика', 'Механика'] },
+            { name: 'Второй закон Ньютона', expression: 'F = m · a', className: '9 класс', topics: ['Динамика', 'Механика'] },
+            { name: 'Третий закон Ньютона', expression: 'F₁ = –F₂', className: '9 класс', topics: ['Динамика', 'Механика'] },
+            { name: 'Закон всемирного тяготения', expression: 'F = G·m₁·m₂ / r²', className: '9 класс', topics: ['Динамика', 'Гравитация'] },
+            { name: 'Первая космическая скорость', expression: 'v = √(g·R)', className: '9 класс', topics: ['Гравитация', 'Космонавтика'] },
+            { name: 'Импульс тела', expression: 'p = m · v', className: '9 класс', topics: ['Импульс', 'Механика'] },
+            { name: 'Закон сохранения импульса', expression: 'm₁v₁ + m₂v₂ = m₁v₁′ + m₂v₂′', className: '9 класс', topics: ['Импульс', 'Механика'] },
+            { name: 'Период (нитяной маятник)', expression: 'T = 2π·√(l / g)', className: '9 класс', topics: ['Колебания', 'Механика'] },
+            { name: 'Период (пружинный маятник)', expression: 'T = 2π·√(m / k)', className: '9 класс', topics: ['Колебания', 'Механика'] },
+            { name: 'Длина волны', expression: 'λ = v · T', className: '9 класс', topics: ['Волны', 'Колебания'] },
+            { name: 'Энергия связи ядра', expression: 'E_св = Δm · c²', className: '9 класс', topics: ['Ядерная физика', 'Радиоактивность'] },
+
+            // ===== 10 КЛАСС =====
+            { name: 'Уравнение Менделеева–Клапейрона', expression: 'p·V = (m/M)·R·T', className: '10 класс', topics: ['МКТ', 'Термодинамика'] },
+            { name: 'Основное уравнение МКТ', expression: 'p = (1/3)·m₀·n·v²', className: '10 класс', topics: ['МКТ', 'Термодинамика'] },
+            { name: 'Средняя кинетическая энергия', expression: 'E_к = (3/2)·k·T', className: '10 класс', topics: ['МКТ', 'Термодинамика'] },
+            { name: 'Внутренняя энергия идеального газа', expression: 'U = (3/2)·(m/M)·R·T', className: '10 класс', topics: ['Термодинамика', 'МКТ'] },
+            { name: 'Первый закон термодинамики', expression: 'ΔU = Q – A', className: '10 класс', topics: ['Термодинамика', 'Теплота'] },
+            { name: 'Работа газа', expression: 'A = p · ΔV', className: '10 класс', topics: ['Термодинамика', 'МКТ'] },
+            { name: 'КПД теплового двигателя (Карно)', expression: 'η = (T₁ – T₂) / T₁', className: '10 класс', topics: ['Термодинамика', 'Теплота'] },
+            { name: 'Закон Кулона', expression: 'F = k·|q₁|·|q₂| / r²', className: '10 класс', topics: ['Электростатика', 'Электричество'] },
+            { name: 'Напряжённость электрического поля', expression: 'E = F / q', className: '10 класс', topics: ['Электростатика', 'Электричество'] },
+            { name: 'Потенциал', expression: 'φ = W / q', className: '10 класс', topics: ['Электростатика', 'Электричество'] },
+            { name: 'Ёмкость конденсатора', expression: 'C = q / U', className: '10 класс', topics: ['Электростатика', 'Конденсаторы'] },
+            { name: 'Энергия конденсатора', expression: 'W = C·U² / 2', className: '10 класс', topics: ['Электростатика', 'Конденсаторы'] },
+            { name: 'Сила тока (общий)', expression: 'I = Δq / Δt', className: '10 класс', topics: ['Электричество', 'Постоянный ток'] },
+            { name: 'Закон Ома для полной цепи', expression: 'I = ε / (R + r)', className: '10 класс', topics: ['Электричество', 'Постоянный ток'] },
+
+            // ===== 11 КЛАСС =====
+            { name: 'Магнитный поток', expression: 'Φ = B · S · cos α', className: '11 класс', topics: ['Электромагнетизм', 'Индукция'] },
+            { name: 'Закон электромагнитной индукции', expression: 'ε = –ΔΦ / Δt', className: '11 класс', topics: ['Электромагнетизм', 'Индукция'] },
+            { name: 'Сила Ампера', expression: 'F_A = B · I · l · sin α', className: '11 класс', topics: ['Электромагнетизм', 'Магнетизм'] },
+            { name: 'Сила Лоренца', expression: 'F_Л = q · v · B · sin α', className: '11 класс', topics: ['Электромагнетизм', 'Магнетизм'] },
+            { name: 'Индуктивность', expression: 'Φ = L · I', className: '11 класс', topics: ['Электромагнетизм', 'Индукция'] },
+            { name: 'Энергия магнитного поля', expression: 'W = L·I² / 2', className: '11 класс', topics: ['Электромагнетизм', 'Индукция'] },
+            { name: 'Период электромагнитных колебаний', expression: 'T = 2π·√(L·C)', className: '11 класс', topics: ['Колебания', 'Электромагнетизм'] },
+            { name: 'Скорость света в среде', expression: 'v = c / n', className: '11 класс', topics: ['Оптика', 'Волны'] },
+            { name: 'Закон преломления света', expression: 'sin α / sin β = n₂ / n₁', className: '11 класс', topics: ['Оптика', 'Волны'] },
+            { name: 'Энергия фотона', expression: 'E = h · ν', className: '11 класс', topics: ['Квантовая физика', 'Фотоэффект'] },
+            { name: 'Уравнение Эйнштейна (фотоэффект)', expression: 'hν = A_вых + E_к', className: '11 класс', topics: ['Квантовая физика', 'Фотоэффект'] },
+            { name: 'Закон радиоактивного распада', expression: 'N = N₀ · 2^(–t/T)', className: '11 класс', topics: ['Ядерная физика', 'Радиоактивность'] },
+            { name: 'Связь массы и энергии', expression: 'E = m · c²', className: '11 класс', topics: ['Ядерная физика', 'Теория относительности'] }
+        ];
+
+        let activeClass = 'Все классы';
+        let activeTopic = 'Все темы';
+        let searchQuery = '';
+
+        const classTabs = document.getElementById('classTabs');
+        const topicFilters = document.getElementById('topicFilters');
+        const formulasGrid = document.getElementById('formulasGrid');
+        const searchInput = document.getElementById('searchInput');
+
+        function getUniqueClasses() {
+            return ['Все классы', ...new Set(formulas.map(f => f.className))];
+        }
+
+        function getUniqueTopics() {
+            const all = formulas.flatMap(f => f.topics);
+            return ['Все темы', ...[...new Set(all)].sort()];
+        }
+
+        function renderClassTabs() {
+            classTabs.innerHTML = getUniqueClasses().map(cls => 
+                `<button class="class-tab ${activeClass === cls ? 'active' : ''}" data-class="${cls}">${cls}</button>`
+            ).join('');
+            classTabs.querySelectorAll('.class-tab').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    activeClass = btn.dataset.class;
+                    renderClassTabs();
+                    renderFormulas();
+                });
+            });
+        }
+
+        function renderTopicFilters() {
+            topicFilters.innerHTML = getUniqueTopics().map(topic => 
+                `<button class="topic-btn ${activeTopic === topic ? 'active' : ''}" data-topic="${topic}">${topic}</button>`
+            ).join('');
+            topicFilters.querySelectorAll('.topic-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    activeTopic = btn.dataset.topic;
+                    renderTopicFilters();
+                    renderFormulas();
+                });
+            });
+        }
+
+        function getFilteredFormulas() {
+            return formulas.filter(f => {
+                if (activeClass !== 'Все классы' && f.className !== activeClass) return false;
+                if (activeTopic !== 'Все темы' && !f.topics.includes(activeTopic)) return false;
+                if (searchQuery.trim()) {
+                    const q = searchQuery.toLowerCase().trim();
+                    return f.name.toLowerCase().includes(q) ||
+                           f.topics.some(t => t.toLowerCase().includes(q)) ||
+                           f.className.toLowerCase().includes(q) ||
+                           f.expression.toLowerCase().includes(q);
+                }
+                return true;
+            });
+        }
+
+        function renderFormulas() {
+            const filtered = getFilteredFormulas();
+            if (filtered.length === 0) {
+                formulasGrid.innerHTML = `<div class="empty-message">😔 Ничего не найдено. Попробуйте изменить запрос или фильтры.</div>`;
+                return;
+            }
+            formulasGrid.innerHTML = filtered.map(f => `
+                <div class="formula-card">
+                    <div class="formula-name">${f.name}</div>
+                    <div class="formula-class">${f.className}</div>
+                    <div class="formula-expression">${f.expression}</div>
+                    <div class="formula-topics">${f.topics.map(t => `<span class="topic-tag">${t}</span>`).join('')}</div>
+                </div>
+            `).join('');
+        }
+
+        function handleSearch() {
+            searchQuery = searchInput.value;
+            renderFormulas();
+        }
+
+        function init() {
+            renderClassTabs();
+            renderTopicFilters();
+            renderFormulas();
+            searchInput.addEventListener('input', handleSearch);
+        }
+
+        init();
+    </script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then((reg) => console.log('SW зарегистрирован:', reg.scope))
+        .catch((err) => console.error('Ошибка SW:', err));
+    });
+  }
+</script>
+</body>
+</html>
